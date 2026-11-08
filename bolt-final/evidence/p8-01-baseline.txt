@@ -1,0 +1,11 @@
+
+ RUN  v2.1.9 /home/project
+
+ ✓ src/lib/availability.first-suite.test.ts (18 tests) 10ms
+ ✓ src/lib/availability.test.ts (22 tests) 16ms
+
+ Test Files  2 passed (2)
+      Tests  40 passed (40)
+   Start at  16:26:49
+   Duration  3.15s (transform 166ms, setup 0ms, collect 273ms, tests 26ms, environment 0ms, prepare 1.29s)
+

@@ -1,0 +1,218 @@
+
+ RUN  v2.1.9 /home/project
+
+ ❯ src/lib/availability.regression.test.ts (7 tests | 2 failed) 23ms
+   × BUG-B regression: checking never changes booking data (AC5) > R-B1: an available check keeps the same array length and contents 15ms
+     → expected [ Array(3) ] to have a length of 2 but got 3
+   × BUG-B regression: checking never changes booking data (AC5) > R-B2: the same slot checked twice gives the same answer both times 2ms
+     → expected { status: 'unavailable', …(2) } to deeply equal { status: 'available' }
+ ❯ src/lib/availability.first-suite.test.ts (18 tests | 1 failed) 21ms
+   × checkAvailability > AC5: does not mutate existing booking data on an available result 12ms
+     → expected [ Array(2) ] to deeply equal [ { start: 600, end: 660, …(1) } ]
+ ❯ src/lib/availability.test.ts (22 tests | 8 failed) 26ms
+   × Case table T01-T14 (expected results derived from AC1-AC4) > T01 AC4: 660-720 touching the booking end is available 9ms
+     → Cannot add property 1, object is not extensible
+   × Case table T01-T14 (expected results derived from AC1-AC4) > T06 AC2: 720-840 exactly 120 minutes is available 1ms
+     → Cannot add property 1, object is not extensible
+   × Case table T01-T14 (expected results derived from AC1-AC4) > T08 AC4: 570-600 touching the booking start is available 1ms
+     → Cannot add property 1, object is not extensible
+   × Case table T01-T14 (expected results derived from AC1-AC4) > T14 AC4: 630-690 with no bookings is available 1ms
+     → Cannot add property 0, object is not extensible
+   × AC5: clear result and booking data preservation > AC5-a: repeated checks (available, overlap, blocked) leave bookings deep-equal to the original 1ms
+     → Cannot add property 1, object is not extensible
+   × AC5: clear result and booking data preservation > AC5-c: an available result is exactly { status: 'available' } (no ambiguous extra state) 1ms
+     → Cannot add property 1, object is not extensible
+   × Additional justified cases > T15 AC1: 541-600 starting one minute after now is available 1ms
+     → Cannot add property 1, object is not extensible
+   × Additional justified cases > T16 AC1+AC2: 1320-1440 ending exactly at midnight with 120 minutes is available 1ms
+     → Cannot add property 1, object is not extensible
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 11 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/lib/availability.first-suite.test.ts > checkAvailability > AC5: does not mutate existing booking data on an available result
+AssertionError: expected [ Array(2) ] to deeply equal [ { start: 600, end: 660, …(1) } ]
+
+- Expected
++ Received
+
+  Array [
+    Object {
+      "end": 660,
+      "label": "Sample",
+      "start": 600,
+    },
++   Object {
++     "end": 720,
++     "label": "Requested slot",
++     "start": 660,
++   },
+  ]
+
+ ❯ eval src/lib/availability.first-suite.test.ts:140:27
+    138|     const r: AvailabilityResult = checkAvailability(room, { start: 660…
+    139|     expect(r.status).toBe("available");
+    140|     expect(room.bookings).toEqual(snapshot);
+       |                           ^
+    141|     expect(room.bookings).toBe(room.bookings); // same reference, not …
+    142|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/11]⎯
+
+ FAIL  src/lib/availability.regression.test.ts > BUG-B regression: checking never changes booking data (AC5) > R-B1: an available check keeps the same array length and contents
+AssertionError: expected [ Array(3) ] to have a length of 2 but got 3
+
+- Expected
++ Received
+
+- 2
++ 3
+
+ ❯ eval src/lib/availability.regression.test.ts:49:27
+     47|     const before = JSON.parse(JSON.stringify(room.bookings));
+     48|     checkAvailability(room, { start: 660, end: 720, now: NOW });
+     49|     expect(room.bookings).toHaveLength(2);
+       |                           ^
+     50|     expect(room.bookings).toEqual(before);
+     51|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/11]⎯
+
+ FAIL  src/lib/availability.regression.test.ts > BUG-B regression: checking never changes booking data (AC5) > R-B2: the same slot checked twice gives the same answer both times
+AssertionError: expected { status: 'unavailable', …(2) } to deeply equal { status: 'available' }
+
+- Expected
++ Received
+
+  Object {
+-   "status": "available",
++   "code": "overlaps_booking",
++   "reason": "Overlaps existing booking \"Requested slot\" (11:00–12:00).",
++   "status": "unavailable",
+  }
+
+ ❯ eval src/lib/availability.regression.test.ts:57:20
+     55|     const second = checkAvailability(room, { start: 660, end: 720, now…
+     56|     expect(first).toEqual({ status: "available" });
+     57|     expect(second).toEqual(first);
+       |                    ^
+     58|   });
+     59|   it("R-B3: the bookings array reference and booking objects are not r…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/11]⎯
+
+ FAIL  src/lib/availability.test.ts > Case table T01-T14 (expected results derived from AC1-AC4) > T01 AC4: 660-720 touching the booking end is available
+TypeError: Cannot add property 1, object is not extensible
+ ❯ Module.checkAvailability src/lib/availability.ts:60:17
+     58| export function checkAvailability(
+     59|   room: Room,
+     60|   input: CheckInput,
+       |                 ^
+     61| ): AvailabilityResult {
+     62|   const { start, end, now } = input;
+ ❯ check src/lib/availability.test.ts:23:40
+ ❯ eval src/lib/availability.test.ts:31:34
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/11]⎯
+
+ FAIL  src/lib/availability.test.ts > Case table T01-T14 (expected results derived from AC1-AC4) > T06 AC2: 720-840 exactly 120 minutes is available
+TypeError: Cannot add property 1, object is not extensible
+ ❯ Module.checkAvailability src/lib/availability.ts:60:17
+     58| export function checkAvailability(
+     59|   room: Room,
+     60|   input: CheckInput,
+       |                 ^
+     61| ): AvailabilityResult {
+     62|   const { start, end, now } = input;
+ ❯ check src/lib/availability.test.ts:23:40
+ ❯ eval src/lib/availability.test.ts:46:34
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/11]⎯
+
+ FAIL  src/lib/availability.test.ts > Case table T01-T14 (expected results derived from AC1-AC4) > T08 AC4: 570-600 touching the booking start is available
+TypeError: Cannot add property 1, object is not extensible
+ ❯ Module.checkAvailability src/lib/availability.ts:60:17
+     58| export function checkAvailability(
+     59|   room: Room,
+     60|   input: CheckInput,
+       |                 ^
+     61| ): AvailabilityResult {
+     62|   const { start, end, now } = input;
+ ❯ check src/lib/availability.test.ts:23:40
+ ❯ eval src/lib/availability.test.ts:52:34
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/11]⎯
+
+ FAIL  src/lib/availability.test.ts > Case table T01-T14 (expected results derived from AC1-AC4) > T14 AC4: 630-690 with no bookings is available
+TypeError: Cannot add property 0, object is not extensible
+ ❯ Module.checkAvailability src/lib/availability.ts:60:17
+     58| export function checkAvailability(
+     59|   room: Room,
+     60|   input: CheckInput,
+       |                 ^
+     61| ): AvailabilityResult {
+     62|   const { start, end, now } = input;
+ ❯ check src/lib/availability.test.ts:23:40
+ ❯ eval src/lib/availability.test.ts:70:34
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/11]⎯
+
+ FAIL  src/lib/availability.test.ts > AC5: clear result and booking data preservation > AC5-a: repeated checks (available, overlap, blocked) leave bookings deep-equal to the original
+TypeError: Cannot add property 1, object is not extensible
+ ❯ Module.checkAvailability src/lib/availability.ts:60:17
+     58| export function checkAvailability(
+     59|   room: Room,
+     60|   input: CheckInput,
+       |                 ^
+     61| ): AvailabilityResult {
+     62|   const { start, end, now } = input;
+ ❯ eval src/lib/availability.test.ts:77:27
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/11]⎯
+
+ FAIL  src/lib/availability.test.ts > AC5: clear result and booking data preservation > AC5-c: an available result is exactly { status: 'available' } (no ambiguous extra state)
+TypeError: Cannot add property 1, object is not extensible
+ ❯ Module.checkAvailability src/lib/availability.ts:60:17
+     58| export function checkAvailability(
+     59|   room: Room,
+     60|   input: CheckInput,
+       |                 ^
+     61| ): AvailabilityResult {
+     62|   const { start, end, now } = input;
+ ❯ check src/lib/availability.test.ts:23:40
+ ❯ eval src/lib/availability.test.ts:89:34
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/11]⎯
+
+ FAIL  src/lib/availability.test.ts > Additional justified cases > T15 AC1: 541-600 starting one minute after now is available
+TypeError: Cannot add property 1, object is not extensible
+ ❯ Module.checkAvailability src/lib/availability.ts:60:17
+     58| export function checkAvailability(
+     59|   room: Room,
+     60|   input: CheckInput,
+       |                 ^
+     61| ): AvailabilityResult {
+     62|   const { start, end, now } = input;
+ ❯ check src/lib/availability.test.ts:23:40
+ ❯ eval src/lib/availability.test.ts:94:34
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/11]⎯
+
+ FAIL  src/lib/availability.test.ts > Additional justified cases > T16 AC1+AC2: 1320-1440 ending exactly at midnight with 120 minutes is available
+TypeError: Cannot add property 1, object is not extensible
+ ❯ Module.checkAvailability src/lib/availability.ts:60:17
+     58| export function checkAvailability(
+     59|   room: Room,
+     60|   input: CheckInput,
+       |                 ^
+     61| ): AvailabilityResult {
+     62|   const { start, end, now } = input;
+ ❯ check src/lib/availability.test.ts:23:40
+ ❯ eval src/lib/availability.test.ts:97:34
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/11]⎯
+
+ Test Files  3 failed (3)
+      Tests  11 failed | 36 passed (47)
+   Start at  16:35:43
+   Duration  3.19s (transform 219ms, setup 0ms, collect 431ms, tests 70ms, environment 1ms, prepare 2.01s)
+

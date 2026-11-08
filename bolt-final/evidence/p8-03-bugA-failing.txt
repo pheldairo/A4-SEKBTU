@@ -1,0 +1,235 @@
+
+ RUN  v2.1.9 /home/project
+
+ ❯ src/lib/availability.first-suite.test.ts (18 tests | 3 failed) 21ms
+   × checkAvailability > T01: 660-720 is available (touching endpoint, AC4) 13ms
+     → expected 'unavailable' to be 'available' // Object.is equality
+   × checkAvailability > T08: 570-600 is available (touching endpoint, AC4) 1ms
+     → expected 'unavailable' to be 'available' // Object.is equality
+   × checkAvailability > AC5: does not mutate existing booking data on an available result 1ms
+     → expected 'unavailable' to be 'available' // Object.is equality
+ ❯ src/lib/availability.test.ts (22 tests | 3 failed) 28ms
+   × Case table T01-T14 (expected results derived from AC1-AC4) > T01 AC4: 660-720 touching the booking end is available 14ms
+     → expected { status: 'unavailable', …(2) } to deeply equal { status: 'available' }
+   × Case table T01-T14 (expected results derived from AC1-AC4) > T08 AC4: 570-600 touching the booking start is available 1ms
+     → expected { status: 'unavailable', …(2) } to deeply equal { status: 'available' }
+   × Additional justified cases > T15 AC1: 541-600 starting one minute after now is available 2ms
+     → expected { status: 'unavailable', …(2) } to deeply equal { status: 'available' }
+ ❯ src/lib/availability.regression.test.ts (7 tests | 4 failed) 22ms
+   × BUG-A regression: touching endpoints are not conflicts (AC4) > R-A1: intervalsOverlap(660, 720, 600, 660) is false (touches previous end) 12ms
+     → expected true to be false // Object.is equality
+   × BUG-A regression: touching endpoints are not conflicts (AC4) > R-A2: intervalsOverlap(540, 600, 600, 660) is false (touches next start) 1ms
+     → expected true to be false // Object.is equality
+   × BUG-A regression: touching endpoints are not conflicts (AC4) > R-A3: 660-720 filling the exact gap between two bookings is available 3ms
+     → expected { status: 'unavailable', …(2) } to deeply equal { status: 'available' }
+   × BUG-B regression: checking never changes booking data (AC5) > R-B2: the same slot checked twice gives the same answer both times 2ms
+     → expected { status: 'unavailable', …(2) } to deeply equal { status: 'available' }
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 10 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/lib/availability.first-suite.test.ts > checkAvailability > T01: 660-720 is available (touching endpoint, AC4)
+AssertionError: expected 'unavailable' to be 'available' // Object.is equality
+
+Expected: "available"
+Received: "unavailable"
+
+ ❯ eval src/lib/availability.first-suite.test.ts:44:36
+     42|   // T01 | 660-720 | available | AC4: touches existing booking end at …
+     43|   it("T01: 660-720 is available (touching endpoint, AC4)", () => {
+     44|     expect(status(room, 660, 720)).toBe("available");
+       |                                    ^
+     45|   });
+     46| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/10]⎯
+
+ FAIL  src/lib/availability.first-suite.test.ts > checkAvailability > T08: 570-600 is available (touching endpoint, AC4)
+AssertionError: expected 'unavailable' to be 'available' // Object.is equality
+
+Expected: "available"
+Received: "unavailable"
+
+ ❯ eval src/lib/availability.first-suite.test.ts:89:36
+     87|   // T08 | 570-600 | available | AC4: touches existing booking start a…
+     88|   it("T08: 570-600 is available (touching endpoint, AC4)", () => {
+     89|     expect(status(room, 570, 600)).toBe("available");
+       |                                    ^
+     90|   });
+     91| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/10]⎯
+
+ FAIL  src/lib/availability.first-suite.test.ts > checkAvailability > AC5: does not mutate existing booking data on an available result
+AssertionError: expected 'unavailable' to be 'available' // Object.is equality
+
+Expected: "available"
+Received: "unavailable"
+
+ ❯ eval src/lib/availability.first-suite.test.ts:139:22
+    137|     const snapshot = room.bookings.map((b) => ({ ...b }));
+    138|     const r: AvailabilityResult = checkAvailability(room, { start: 660…
+    139|     expect(r.status).toBe("available");
+       |                      ^
+    140|     expect(room.bookings).toEqual(snapshot);
+    141|     expect(room.bookings).toBe(room.bookings); // same reference, not …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/10]⎯
+
+ FAIL  src/lib/availability.regression.test.ts > BUG-A regression: touching endpoints are not conflicts (AC4) > R-A1: intervalsOverlap(660, 720, 600, 660) is false (touches previous end)
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ eval src/lib/availability.regression.test.ts:29:50
+     27| describe("BUG-A regression: touching endpoints are not conflicts (AC4)…
+     28|   it("R-A1: intervalsOverlap(660, 720, 600, 660) is false (touches pre…
+     29|     expect(intervalsOverlap(660, 720, 600, 660)).toBe(false);
+       |                                                  ^
+     30|   });
+     31|   it("R-A2: intervalsOverlap(540, 600, 600, 660) is false (touches nex…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/10]⎯
+
+ FAIL  src/lib/availability.regression.test.ts > BUG-A regression: touching endpoints are not conflicts (AC4) > R-A2: intervalsOverlap(540, 600, 600, 660) is false (touches next start)
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ eval src/lib/availability.regression.test.ts:32:50
+     30|   });
+     31|   it("R-A2: intervalsOverlap(540, 600, 600, 660) is false (touches nex…
+     32|     expect(intervalsOverlap(540, 600, 600, 660)).toBe(false);
+       |                                                  ^
+     33|   });
+     34|   it("R-A3: 660-720 filling the exact gap between two bookings is avai…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/10]⎯
+
+ FAIL  src/lib/availability.regression.test.ts > BUG-A regression: touching endpoints are not conflicts (AC4) > R-A3: 660-720 filling the exact gap between two bookings is available
+AssertionError: expected { status: 'unavailable', …(2) } to deeply equal { status: 'available' }
+
+- Expected
++ Received
+
+  Object {
+-   "status": "available",
++   "code": "overlaps_booking",
++   "reason": "Overlaps existing booking \"Morning\" (10:00–11:00).",
++   "status": "unavailable",
+  }
+
+ ❯ eval src/lib/availability.regression.test.ts:36:20
+     34|   it("R-A3: 660-720 filling the exact gap between two bookings is avai…
+     35|     const result = checkAvailability(freshRoom(twoBookings()), { start…
+     36|     expect(result).toEqual({ status: "available" });
+       |                    ^
+     37|   });
+     38|   it("R-A4: 659-720 (one minute into the first booking) is still rejec…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/10]⎯
+
+ FAIL  src/lib/availability.regression.test.ts > BUG-B regression: checking never changes booking data (AC5) > R-B2: the same slot checked twice gives the same answer both times
+AssertionError: expected { status: 'unavailable', …(2) } to deeply equal { status: 'available' }
+
+- Expected
++ Received
+
+  Object {
+-   "status": "available",
++   "code": "overlaps_booking",
++   "reason": "Overlaps existing booking \"Morning\" (10:00–11:00).",
++   "status": "unavailable",
+  }
+
+ ❯ eval src/lib/availability.regression.test.ts:56:19
+     54|     const first = checkAvailability(room, { start: 660, end: 720, now:…
+     55|     const second = checkAvailability(room, { start: 660, end: 720, now…
+     56|     expect(first).toEqual({ status: "available" });
+       |                   ^
+     57|     expect(second).toEqual(first);
+     58|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/10]⎯
+
+ FAIL  src/lib/availability.test.ts > Case table T01-T14 (expected results derived from AC1-AC4) > T01 AC4: 660-720 touching the booking end is available
+AssertionError: expected { status: 'unavailable', …(2) } to deeply equal { status: 'available' }
+
+- Expected
++ Received
+
+  Object {
+-   "status": "available",
++   "code": "overlaps_booking",
++   "reason": "Overlaps existing booking \"Sample\" (10:00–11:00).",
++   "status": "unavailable",
+  }
+
+ ❯ eval src/lib/availability.test.ts:52:45
+     50| describe("Case table T01-T14 (expected results derived from AC1-AC4)",…
+     51|   it("T01 AC4: 660-720 touching the booking end is available", () => {
+     52|     expect(check({ start: 660, end: 720 })).toEqual(AVAILABLE);
+       |                                             ^
+     53|   });
+     54|   it("T02 AC1: 540-570 starting exactly at now is unavailable", () => {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/10]⎯
+
+ FAIL  src/lib/availability.test.ts > Case table T01-T14 (expected results derived from AC1-AC4) > T08 AC4: 570-600 touching the booking start is available
+AssertionError: expected { status: 'unavailable', …(2) } to deeply equal { status: 'available' }
+
+- Expected
++ Received
+
+  Object {
+-   "status": "available",
++   "code": "overlaps_booking",
++   "reason": "Overlaps existing booking \"Sample\" (10:00–11:00).",
++   "status": "unavailable",
+  }
+
+ ❯ eval src/lib/availability.test.ts:73:45
+     71|   });
+     72|   it("T08 AC4: 570-600 touching the booking start is available", () =>…
+     73|     expect(check({ start: 570, end: 600 })).toEqual(AVAILABLE);
+       |                                             ^
+     74|   });
+     75|   it("T09 AC4: 630-690 partial overlap is unavailable", () => {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/10]⎯
+
+ FAIL  src/lib/availability.test.ts > Additional justified cases > T15 AC1: 541-600 starting one minute after now is available
+AssertionError: expected { status: 'unavailable', …(2) } to deeply equal { status: 'available' }
+
+- Expected
++ Received
+
+  Object {
+-   "status": "available",
++   "code": "overlaps_booking",
++   "reason": "Overlaps existing booking \"Sample\" (10:00–11:00).",
++   "status": "unavailable",
+  }
+
+ ❯ eval src/lib/availability.test.ts:119:45
+    117|   // Detects an off-by-one such as start <= now + 1.
+    118|   it("T15 AC1: 541-600 starting one minute after now is available", ()…
+    119|     expect(check({ start: 541, end: 600 })).toEqual(AVAILABLE);
+       |                                             ^
+    120|   });
+    121|   // Upper inclusive day boundary (end == 1440) combined with the 120-…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/10]⎯
+
+ Test Files  3 failed (3)
+      Tests  10 failed | 37 passed (47)
+   Start at  16:28:58
+   Duration  3.76s (transform 254ms, setup 0ms, collect 386ms, tests 71ms, environment 1ms, prepare 2.71s)
+

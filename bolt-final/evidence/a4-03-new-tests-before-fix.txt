@@ -1,0 +1,17 @@
+
+ RUN  v2.1.9 /home/project
+
+ ✓ src/lib/availability.regression.test.ts (7 tests) 8ms
+ ✓ src/lib/availability.first-suite.test.ts (18 tests) 11ms
+ ✓ src/lib/availability.test.ts (22 tests) 15ms
+ ✓ src/lib/catalog.test.ts (17 tests) 17ms
+ ❯ src/App.integration.test.tsx (6 tests | 1 failed) 791ms
+   ✓ UI integration (fixed clock 09:00) > U1 F5: switching room clears the old result and the next check uses the new room's bookings 374ms
+   × UI integration (fixed clock 09:00) > U6 F5: a room hidden by a filter does not silently come back as the selection when the filter is relaxed 132ms
+     → expected 'false' to be 'true' // Object.is equality
+
+ Test Files  1 failed | 4 passed (5)
+      Tests  1 failed | 69 passed (70)
+   Start at  17:09:59
+   Duration  6.75s (transform 555ms, setup 0ms, collect 1.70s, tests 842ms, environment 1.40s, prepare 3.70s)
+

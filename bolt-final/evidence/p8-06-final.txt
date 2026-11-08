@@ -1,0 +1,12 @@
+
+ RUN  v2.1.9 /home/project
+
+ ✓ src/lib/availability.regression.test.ts (7 tests) 8ms
+ ✓ src/lib/availability.first-suite.test.ts (18 tests) 11ms
+ ✓ src/lib/availability.test.ts (22 tests) 14ms
+
+ Test Files  3 passed (3)
+      Tests  47 passed (47)
+   Start at  16:36:16
+   Duration  3.19s (transform 150ms, setup 0ms, collect 286ms, tests 34ms, environment 1ms, prepare 1.90s)
+

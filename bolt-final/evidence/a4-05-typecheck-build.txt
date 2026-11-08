@@ -1,0 +1,17 @@
+
+> vite-react-typescript-starter@0.0.0 typecheck
+> tsc --noEmit -p tsconfig.app.json
+
+
+> vite-react-typescript-starter@0.0.0 build
+> vite build
+
+vite v5.4.8 building for production...
+transforming...
+✓ 1578 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.71 kB │ gzip:  0.39 kB
+dist/assets/index-tyz95Na_.css   15.03 kB │ gzip:  3.60 kB
+dist/assets/index-DZZ2SwZ1.js   163.52 kB │ gzip: 51.53 kB
+✓ built in 5.44s

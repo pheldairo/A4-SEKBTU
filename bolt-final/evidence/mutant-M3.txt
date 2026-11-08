@@ -1,0 +1,116 @@
+M3 applied: 'if (room.blocked) {'  ->  'if (false && room.blocked) {'
+
+ RUN  v2.1.9 /home/project
+
+ ✓ src/lib/availability.first-suite.test.ts > checkAvailability > T01: 660-720 is available (touching endpoint, AC4)
+ ✓ src/lib/availability.first-suite.test.ts > checkAvailability > T02: 540-570 is unavailable because start is not in the future (AC1)
+ ✓ src/lib/availability.first-suite.test.ts > checkAvailability > T03: 720-720 is unavailable because start equals end (AC1)
+ ✓ src/lib/availability.first-suite.test.ts > checkAvailability > T04: 750-720 is unavailable because start is after end (AC1)
+ ✓ src/lib/availability.first-suite.test.ts > checkAvailability > T05: 1380-1441 is unavailable because end exceeds 1440 (AC1)
+ ✓ src/lib/availability.first-suite.test.ts > checkAvailability > T06: 720-840 is available with duration exactly 120 (AC2)
+ ✓ src/lib/availability.first-suite.test.ts > checkAvailability > T07: 720-841 is unavailable because duration exceeds 120 (AC2)
+ ✓ src/lib/availability.first-suite.test.ts > checkAvailability > T08: 570-600 is available (touching endpoint, AC4)
+ ✓ src/lib/availability.first-suite.test.ts > checkAvailability > T09: 630-690 is unavailable because it overlaps an existing booking (AC4)
+ ✓ src/lib/availability.first-suite.test.ts > checkAvailability > T10: 570-690 is unavailable because it overlaps an existing booking (AC4)
+ ✓ src/lib/availability.first-suite.test.ts > checkAvailability > T11: 615-645 is unavailable because it is inside an existing booking (AC4)
+ ✓ src/lib/availability.first-suite.test.ts > checkAvailability > T12: 600-660 is unavailable because it matches an existing booking (AC4)
+ × src/lib/availability.first-suite.test.ts > checkAvailability > T13: 660-720 is unavailable when the room is blocked (AC3)
+   → expected 'available' to be 'unavailable' // Object.is equality
+ ✓ src/lib/availability.first-suite.test.ts > checkAvailability > T14: 630-690 is available when there are no existing bookings (AC4)
+ ✓ src/lib/availability.first-suite.test.ts > checkAvailability > AC5: does not mutate existing booking data on an available result
+ ✓ src/lib/availability.first-suite.test.ts > checkAvailability > AC5: does not mutate existing booking data on an unavailable result
+ ✓ src/lib/availability.first-suite.test.ts > checkAvailability > T15: 1320-1440 is available at the day boundary with duration 120 (AC1+AC2)
+ ✓ src/lib/availability.first-suite.test.ts > checkAvailability > T16: 600.5-660 is unavailable because start is not a whole minute (AC1)
+ ✓ src/lib/availability.test.ts > Case table T01-T14 (expected results derived from AC1-AC4) > T01 AC4: 660-720 touching the booking end is available
+ ✓ src/lib/availability.test.ts > Case table T01-T14 (expected results derived from AC1-AC4) > T02 AC1: 540-570 starting exactly at now is unavailable
+ ✓ src/lib/availability.test.ts > Case table T01-T14 (expected results derived from AC1-AC4) > T03 AC1: 720-720 zero duration is unavailable
+ ✓ src/lib/availability.test.ts > Case table T01-T14 (expected results derived from AC1-AC4) > T04 AC1: 750-720 reversed range is unavailable
+ ✓ src/lib/availability.test.ts > Case table T01-T14 (expected results derived from AC1-AC4) > T05 AC1: 1380-1441 past the end of day is unavailable
+ ✓ src/lib/availability.test.ts > Case table T01-T14 (expected results derived from AC1-AC4) > T06 AC2: 720-840 exactly 120 minutes is available
+ ✓ src/lib/availability.test.ts > Case table T01-T14 (expected results derived from AC1-AC4) > T07 AC2: 720-841 121 minutes is unavailable
+ ✓ src/lib/availability.test.ts > Case table T01-T14 (expected results derived from AC1-AC4) > T08 AC4: 570-600 touching the booking start is available
+ ✓ src/lib/availability.test.ts > Case table T01-T14 (expected results derived from AC1-AC4) > T09 AC4: 630-690 partial overlap is unavailable
+ ✓ src/lib/availability.test.ts > Case table T01-T14 (expected results derived from AC1-AC4) > T10 AC4: 570-690 containing the booking is unavailable
+ ✓ src/lib/availability.test.ts > Case table T01-T14 (expected results derived from AC1-AC4) > T11 AC4: 615-645 inside the booking is unavailable
+ ✓ src/lib/availability.test.ts > Case table T01-T14 (expected results derived from AC1-AC4) > T12 AC4: 600-660 identical interval is unavailable
+ × src/lib/availability.test.ts > Case table T01-T14 (expected results derived from AC1-AC4) > T13 AC3: 660-720 in a blocked room is unavailable
+   → expected { status: 'available' } to match object { status: 'unavailable', …(1) }
+ ✓ src/lib/availability.test.ts > Case table T01-T14 (expected results derived from AC1-AC4) > T14 AC4: 630-690 with no bookings is available
+ ✓ src/lib/availability.test.ts > AC5: clear result and booking data preservation > AC5-a: repeated checks (available, overlap, blocked) leave bookings deep-equal to the original
+ ✓ src/lib/availability.test.ts > AC5: clear result and booking data preservation > AC5-b: an unavailable result always carries a non-empty human-readable reason
+ ✓ src/lib/availability.test.ts > AC5: clear result and booking data preservation > AC5-c: an available result is exactly { status: 'available' } (no ambiguous extra state)
+ ✓ src/lib/availability.test.ts > Additional justified cases > T15 AC1: 541-600 starting one minute after now is available
+ ✓ src/lib/availability.test.ts > Additional justified cases > T16 AC1+AC2: 1320-1440 ending exactly at midnight with 120 minutes is available
+ ✓ src/lib/availability.test.ts > Additional justified cases > T17 AC4: 930-990 overlapping the second of two bookings is unavailable
+ ✓ src/lib/availability.test.ts > Additional justified cases > T18 AC1: 600.5-660 with a fractional start is unavailable
+ × src/lib/availability.test.ts > Additional justified cases > T19 AC3+AC5 (integration): page data - blocked ROOMS[1] is rejected, ROOMS[0] bookings unchanged
+   → expected { status: 'available' } to match object { status: 'unavailable', …(1) }
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/lib/availability.first-suite.test.ts > checkAvailability > T13: 660-720 is unavailable when the room is blocked (AC3)
+AssertionError: expected 'available' to be 'unavailable' // Object.is equality
+
+Expected: "unavailable"
+Received: "available"
+
+ ❯ eval src/lib/availability.first-suite.test.ts:124:22
+    122|     const blockedRoom = makeRoom({ blocked: true, blockedReason: "Main…
+    123|     const r = checkAvailability(blockedRoom, { start: 660, end: 720, n…
+    124|     expect(r.status).toBe("unavailable");
+       |                      ^
+    125|     if (r.status === "unavailable") expect(r.code).toBe("room_blocked"…
+    126|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  src/lib/availability.test.ts > Case table T01-T14 (expected results derived from AC1-AC4) > T13 AC3: 660-720 in a blocked room is unavailable
+AssertionError: expected { status: 'available' } to match object { status: 'unavailable', …(1) }
+
+- Expected
++ Received
+
+  Object {
+-   "code": "room_blocked",
+-   "status": "unavailable",
++   "status": "available",
+  }
+
+ ❯ eval src/lib/availability.test.ts:88:60
+     86|   });
+     87|   it("T13 AC3: 660-720 in a blocked room is unavailable", () => {
+     88|     expect(check({ start: 660, end: 720, blocked: true })).toMatchObje…
+       |                                                            ^
+     89|   });
+     90|   it("T14 AC4: 630-690 with no bookings is available", () => {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  src/lib/availability.test.ts > Additional justified cases > T19 AC3+AC5 (integration): page data - blocked ROOMS[1] is rejected, ROOMS[0] bookings unchanged
+AssertionError: expected { status: 'available' } to match object { status: 'unavailable', …(1) }
+
+- Expected
++ Received
+
+  Object {
+-   "code": "room_blocked",
+-   "status": "unavailable",
++   "status": "available",
+  }
+
+ ❯ eval src/lib/availability.test.ts:144:78
+    142|     const before = JSON.stringify(ROOMS[0].bookings);
+    143|     const blocked = ROOMS.find((r) => r.blocked)!;
+    144|     expect(checkAvailability(blocked, { start: 1320, end: 1380, now: N…
+       |                                                                              ^
+    145|       rejected("room_blocked"),
+    146|     );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+ Test Files  2 failed (2)
+      Tests  3 failed | 37 passed (40)
+   Start at  16:15:17
+   Duration  3.21s (transform 196ms, setup 0ms, collect 295ms, tests 55ms, environment 1ms, prepare 1.33s)
+
+restored correct src/lib/availability.ts

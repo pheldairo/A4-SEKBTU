@@ -1,0 +1,176 @@
+M2 applied: 'return aStart < bEnd && bStart < aEnd;'  ->  'return aStart <= bEnd && bStart <= aEnd;'
+
+ RUN  v2.1.9 /home/project
+
+ × src/lib/availability.first-suite.test.ts > checkAvailability > T01: 660-720 is available (touching endpoint, AC4)
+   → expected 'unavailable' to be 'available' // Object.is equality
+ ✓ src/lib/availability.first-suite.test.ts > checkAvailability > T02: 540-570 is unavailable because start is not in the future (AC1)
+ ✓ src/lib/availability.first-suite.test.ts > checkAvailability > T03: 720-720 is unavailable because start equals end (AC1)
+ ✓ src/lib/availability.first-suite.test.ts > checkAvailability > T04: 750-720 is unavailable because start is after end (AC1)
+ ✓ src/lib/availability.first-suite.test.ts > checkAvailability > T05: 1380-1441 is unavailable because end exceeds 1440 (AC1)
+ ✓ src/lib/availability.first-suite.test.ts > checkAvailability > T06: 720-840 is available with duration exactly 120 (AC2)
+ ✓ src/lib/availability.first-suite.test.ts > checkAvailability > T07: 720-841 is unavailable because duration exceeds 120 (AC2)
+ × src/lib/availability.first-suite.test.ts > checkAvailability > T08: 570-600 is available (touching endpoint, AC4)
+   → expected 'unavailable' to be 'available' // Object.is equality
+ ✓ src/lib/availability.first-suite.test.ts > checkAvailability > T09: 630-690 is unavailable because it overlaps an existing booking (AC4)
+ ✓ src/lib/availability.first-suite.test.ts > checkAvailability > T10: 570-690 is unavailable because it overlaps an existing booking (AC4)
+ ✓ src/lib/availability.first-suite.test.ts > checkAvailability > T11: 615-645 is unavailable because it is inside an existing booking (AC4)
+ ✓ src/lib/availability.first-suite.test.ts > checkAvailability > T12: 600-660 is unavailable because it matches an existing booking (AC4)
+ ✓ src/lib/availability.first-suite.test.ts > checkAvailability > T13: 660-720 is unavailable when the room is blocked (AC3)
+ ✓ src/lib/availability.first-suite.test.ts > checkAvailability > T14: 630-690 is available when there are no existing bookings (AC4)
+ × src/lib/availability.first-suite.test.ts > checkAvailability > AC5: does not mutate existing booking data on an available result
+   → expected 'unavailable' to be 'available' // Object.is equality
+ ✓ src/lib/availability.first-suite.test.ts > checkAvailability > AC5: does not mutate existing booking data on an unavailable result
+ ✓ src/lib/availability.first-suite.test.ts > checkAvailability > T15: 1320-1440 is available at the day boundary with duration 120 (AC1+AC2)
+ ✓ src/lib/availability.first-suite.test.ts > checkAvailability > T16: 600.5-660 is unavailable because start is not a whole minute (AC1)
+ × src/lib/availability.test.ts > Case table T01-T14 (expected results derived from AC1-AC4) > T01 AC4: 660-720 touching the booking end is available
+   → expected { status: 'unavailable', …(2) } to deeply equal { status: 'available' }
+ ✓ src/lib/availability.test.ts > Case table T01-T14 (expected results derived from AC1-AC4) > T02 AC1: 540-570 starting exactly at now is unavailable
+ ✓ src/lib/availability.test.ts > Case table T01-T14 (expected results derived from AC1-AC4) > T03 AC1: 720-720 zero duration is unavailable
+ ✓ src/lib/availability.test.ts > Case table T01-T14 (expected results derived from AC1-AC4) > T04 AC1: 750-720 reversed range is unavailable
+ ✓ src/lib/availability.test.ts > Case table T01-T14 (expected results derived from AC1-AC4) > T05 AC1: 1380-1441 past the end of day is unavailable
+ ✓ src/lib/availability.test.ts > Case table T01-T14 (expected results derived from AC1-AC4) > T06 AC2: 720-840 exactly 120 minutes is available
+ ✓ src/lib/availability.test.ts > Case table T01-T14 (expected results derived from AC1-AC4) > T07 AC2: 720-841 121 minutes is unavailable
+ × src/lib/availability.test.ts > Case table T01-T14 (expected results derived from AC1-AC4) > T08 AC4: 570-600 touching the booking start is available
+   → expected { status: 'unavailable', …(2) } to deeply equal { status: 'available' }
+ ✓ src/lib/availability.test.ts > Case table T01-T14 (expected results derived from AC1-AC4) > T09 AC4: 630-690 partial overlap is unavailable
+ ✓ src/lib/availability.test.ts > Case table T01-T14 (expected results derived from AC1-AC4) > T10 AC4: 570-690 containing the booking is unavailable
+ ✓ src/lib/availability.test.ts > Case table T01-T14 (expected results derived from AC1-AC4) > T11 AC4: 615-645 inside the booking is unavailable
+ ✓ src/lib/availability.test.ts > Case table T01-T14 (expected results derived from AC1-AC4) > T12 AC4: 600-660 identical interval is unavailable
+ ✓ src/lib/availability.test.ts > Case table T01-T14 (expected results derived from AC1-AC4) > T13 AC3: 660-720 in a blocked room is unavailable
+ ✓ src/lib/availability.test.ts > Case table T01-T14 (expected results derived from AC1-AC4) > T14 AC4: 630-690 with no bookings is available
+ ✓ src/lib/availability.test.ts > AC5: clear result and booking data preservation > AC5-a: repeated checks (available, overlap, blocked) leave bookings deep-equal to the original
+ ✓ src/lib/availability.test.ts > AC5: clear result and booking data preservation > AC5-b: an unavailable result always carries a non-empty human-readable reason
+ ✓ src/lib/availability.test.ts > AC5: clear result and booking data preservation > AC5-c: an available result is exactly { status: 'available' } (no ambiguous extra state)
+ × src/lib/availability.test.ts > Additional justified cases > T15 AC1: 541-600 starting one minute after now is available
+   → expected { status: 'unavailable', …(2) } to deeply equal { status: 'available' }
+ ✓ src/lib/availability.test.ts > Additional justified cases > T16 AC1+AC2: 1320-1440 ending exactly at midnight with 120 minutes is available
+ ✓ src/lib/availability.test.ts > Additional justified cases > T17 AC4: 930-990 overlapping the second of two bookings is unavailable
+ ✓ src/lib/availability.test.ts > Additional justified cases > T18 AC1: 600.5-660 with a fractional start is unavailable
+ ✓ src/lib/availability.test.ts > Additional justified cases > T19 AC3+AC5 (integration): page data - blocked ROOMS[1] is rejected, ROOMS[0] bookings unchanged
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/lib/availability.first-suite.test.ts > checkAvailability > T01: 660-720 is available (touching endpoint, AC4)
+AssertionError: expected 'unavailable' to be 'available' // Object.is equality
+
+Expected: "available"
+Received: "unavailable"
+
+ ❯ eval src/lib/availability.first-suite.test.ts:44:36
+     42|   // T01 | 660-720 | available | AC4: touches existing booking end at …
+     43|   it("T01: 660-720 is available (touching endpoint, AC4)", () => {
+     44|     expect(status(room, 660, 720)).toBe("available");
+       |                                    ^
+     45|   });
+     46| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  src/lib/availability.first-suite.test.ts > checkAvailability > T08: 570-600 is available (touching endpoint, AC4)
+AssertionError: expected 'unavailable' to be 'available' // Object.is equality
+
+Expected: "available"
+Received: "unavailable"
+
+ ❯ eval src/lib/availability.first-suite.test.ts:89:36
+     87|   // T08 | 570-600 | available | AC4: touches existing booking start a…
+     88|   it("T08: 570-600 is available (touching endpoint, AC4)", () => {
+     89|     expect(status(room, 570, 600)).toBe("available");
+       |                                    ^
+     90|   });
+     91| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  src/lib/availability.first-suite.test.ts > checkAvailability > AC5: does not mutate existing booking data on an available result
+AssertionError: expected 'unavailable' to be 'available' // Object.is equality
+
+Expected: "available"
+Received: "unavailable"
+
+ ❯ eval src/lib/availability.first-suite.test.ts:139:22
+    137|     const snapshot = room.bookings.map((b) => ({ ...b }));
+    138|     const r: AvailabilityResult = checkAvailability(room, { start: 660…
+    139|     expect(r.status).toBe("available");
+       |                      ^
+    140|     expect(room.bookings).toEqual(snapshot);
+    141|     expect(room.bookings).toBe(room.bookings); // same reference, not …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+ FAIL  src/lib/availability.test.ts > Case table T01-T14 (expected results derived from AC1-AC4) > T01 AC4: 660-720 touching the booking end is available
+AssertionError: expected { status: 'unavailable', …(2) } to deeply equal { status: 'available' }
+
+- Expected
++ Received
+
+  Object {
+-   "status": "available",
++   "code": "overlaps_booking",
++   "reason": "Overlaps existing booking \"Sample\" (10:00–11:00).",
++   "status": "unavailable",
+  }
+
+ ❯ eval src/lib/availability.test.ts:52:45
+     50| describe("Case table T01-T14 (expected results derived from AC1-AC4)",…
+     51|   it("T01 AC4: 660-720 touching the booking end is available", () => {
+     52|     expect(check({ start: 660, end: 720 })).toEqual(AVAILABLE);
+       |                                             ^
+     53|   });
+     54|   it("T02 AC1: 540-570 starting exactly at now is unavailable", () => {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯
+
+ FAIL  src/lib/availability.test.ts > Case table T01-T14 (expected results derived from AC1-AC4) > T08 AC4: 570-600 touching the booking start is available
+AssertionError: expected { status: 'unavailable', …(2) } to deeply equal { status: 'available' }
+
+- Expected
++ Received
+
+  Object {
+-   "status": "available",
++   "code": "overlaps_booking",
++   "reason": "Overlaps existing booking \"Sample\" (10:00–11:00).",
++   "status": "unavailable",
+  }
+
+ ❯ eval src/lib/availability.test.ts:73:45
+     71|   });
+     72|   it("T08 AC4: 570-600 touching the booking start is available", () =>…
+     73|     expect(check({ start: 570, end: 600 })).toEqual(AVAILABLE);
+       |                                             ^
+     74|   });
+     75|   it("T09 AC4: 630-690 partial overlap is unavailable", () => {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/6]⎯
+
+ FAIL  src/lib/availability.test.ts > Additional justified cases > T15 AC1: 541-600 starting one minute after now is available
+AssertionError: expected { status: 'unavailable', …(2) } to deeply equal { status: 'available' }
+
+- Expected
++ Received
+
+  Object {
+-   "status": "available",
++   "code": "overlaps_booking",
++   "reason": "Overlaps existing booking \"Sample\" (10:00–11:00).",
++   "status": "unavailable",
+  }
+
+ ❯ eval src/lib/availability.test.ts:119:45
+    117|   // Detects an off-by-one such as start <= now + 1.
+    118|   it("T15 AC1: 541-600 starting one minute after now is available", ()…
+    119|     expect(check({ start: 541, end: 600 })).toEqual(AVAILABLE);
+       |                                             ^
+    120|   });
+    121|   // Upper inclusive day boundary (end == 1440) combined with the 120-…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/6]⎯
+
+ Test Files  2 failed (2)
+      Tests  6 failed | 34 passed (40)
+   Start at  16:15:06
+   Duration  3.17s (transform 151ms, setup 0ms, collect 228ms, tests 49ms, environment 0ms, prepare 1.25s)
+
+restored correct src/lib/availability.ts

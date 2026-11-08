@@ -1,0 +1,29 @@
+$ npx vitest run --reporter=verbose
+vitest/2.1.9 linux-x64 node-v24.22.2
+
+ RUN  v2.1.9 /home/project
+
+ ✓ src/lib/availability.test.ts > checkAvailability > T01: 660-720 is available (touching endpoint, AC4)
+ ✓ src/lib/availability.test.ts > checkAvailability > T02: 540-570 is unavailable because start is not in the future (AC1)
+ ✓ src/lib/availability.test.ts > checkAvailability > T03: 720-720 is unavailable because start equals end (AC1)
+ ✓ src/lib/availability.test.ts > checkAvailability > T04: 750-720 is unavailable because start is after end (AC1)
+ ✓ src/lib/availability.test.ts > checkAvailability > T05: 1380-1441 is unavailable because end exceeds 1440 (AC1)
+ ✓ src/lib/availability.test.ts > checkAvailability > T06: 720-840 is available with duration exactly 120 (AC2)
+ ✓ src/lib/availability.test.ts > checkAvailability > T07: 720-841 is unavailable because duration exceeds 120 (AC2)
+ ✓ src/lib/availability.test.ts > checkAvailability > T08: 570-600 is available (touching endpoint, AC4)
+ ✓ src/lib/availability.test.ts > checkAvailability > T09: 630-690 is unavailable because it overlaps an existing booking (AC4)
+ ✓ src/lib/availability.test.ts > checkAvailability > T10: 570-690 is unavailable because it overlaps an existing booking (AC4)
+ ✓ src/lib/availability.test.ts > checkAvailability > T11: 615-645 is unavailable because it is inside an existing booking (AC4)
+ ✓ src/lib/availability.test.ts > checkAvailability > T12: 600-660 is unavailable because it matches an existing booking (AC4)
+ ✓ src/lib/availability.test.ts > checkAvailability > T13: 660-720 is unavailable when the room is blocked (AC3)
+ ✓ src/lib/availability.test.ts > checkAvailability > T14: 630-690 is available when there are no existing bookings (AC4)
+ ✓ src/lib/availability.test.ts > checkAvailability > AC5: does not mutate existing booking data on an available result
+ ✓ src/lib/availability.test.ts > checkAvailability > AC5: does not mutate existing booking data on an unavailable result
+ ✓ src/lib/availability.test.ts > checkAvailability > T15: 1320-1440 is available at the day boundary with duration 120 (AC1+AC2)
+ ✓ src/lib/availability.test.ts > checkAvailability > T16: 600.5-660 is unavailable because start is not a whole minute (AC1)
+
+ Test Files  1 passed (1)
+      Tests  18 passed (18)
+   Start at  16:11:26
+   Duration  3.13s (transform 96ms, setup 0ms, collect 117ms, tests 10ms, environment 0ms, prepare 656ms)
+
